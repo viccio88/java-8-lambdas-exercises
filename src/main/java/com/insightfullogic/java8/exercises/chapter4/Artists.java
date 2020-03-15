@@ -1,8 +1,10 @@
 package com.insightfullogic.java8.exercises.chapter4;
 
+import com.insightfullogic.java8.answers.chapter3.StringExercises;
 import com.insightfullogic.java8.examples.chapter1.Artist;
 
 import java.util.List;
+import java.util.Optional;
 
 public class Artists {
 
@@ -13,7 +15,7 @@ public class Artists {
     }
 
     public Artist getArtist(int index) {
-        if (index < 0 || index >= artists.size()) {
+        if(index > artists.size() || index < 0 ){
             indexException(index);
         }
         return artists.get(index);
@@ -25,12 +27,11 @@ public class Artists {
     }
 
     public String getArtistName(int index) {
-        try {
-            Artist artist = getArtist(index);
-            return artist.getName();
-        } catch (IllegalArgumentException e) {
+        if(index > artists.size() || index < 0 ){
             return "unknown";
         }
+        return Optional.ofNullable(artists.get(index))
+                .orElse(new Artist("unknown","unknown"))
+                .getName();
     }
-
 }

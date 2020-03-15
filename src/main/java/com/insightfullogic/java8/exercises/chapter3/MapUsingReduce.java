@@ -13,7 +13,19 @@ import java.util.stream.Stream;
 public class MapUsingReduce {
 
     public static <I, O> List<O> map(Stream<I> stream, Function<I, O> mapper) {
-        return Exercises.replaceThisWithSolution();
+        List<O> initialAcc = new ArrayList<>();
+        return stream.reduce(initialAcc,
+                (List<O> acc, I e) -> {
+            List<O> newAcc = new ArrayList<>(acc);
+            newAcc.add(mapper.apply(e));
+            return newAcc;
+                },
+                (List<O> initAcc, List<O> finalAcc) ->{
+            List<O> c = new ArrayList<>(initAcc);
+            c.addAll(finalAcc);
+            return c;
+                });
+
     }
 
 }
