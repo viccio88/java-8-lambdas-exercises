@@ -3,6 +3,7 @@ package com.insightfullogic.java8.exercises.chapter9;
 import com.insightfullogic.java8.examples.chapter1.Artist;
 import com.insightfullogic.java8.exercises.Exercises;
 
+import java.util.concurrent.CompletableFuture;
 import java.util.function.Consumer;
 import java.util.function.Function;
 
@@ -15,11 +16,18 @@ public class CallbackArtistAnalyser implements ArtistAnalyzer {
     }
 
     public void isLargerGroup(String artistName, String otherArtistName, Consumer<Boolean> handler) {
-        Exercises.replaceThisWithSolution();
+        CompletableFuture<Long> countOfMembersInFirstBand = getNumberOfMembers(artistName);
+        CompletableFuture<Long> countOfMembersInSecondBand = getNumberOfMembers(otherArtistName);
+
+        countOfMembersInFirstBand
+                .thenCombine(countOfMembersInSecondBand, (nr1, nr2) -> nr1 > nr2)
+                .thenAccept((result) ->
+                                    handler.accept(result));
     }
 
-    private long getNumberOfMembers(String artistName) {
-        return Exercises.replaceThisWithSolution();
+    private CompletableFuture<Long>  getNumberOfMembers(String artistName) {
+        return CompletableFuture.supplyAsync(() -> artistLookupService.apply(artistName))
+                .thenApply(Artist::getMembers).thenApply(members -> members.count());
     }
 
 }
